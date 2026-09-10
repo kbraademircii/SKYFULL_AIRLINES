@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SKYFULL Airlines - Fly High</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700&family=Inter:wght@400;600&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+
+    <nav class="navbar">
+        <div class="logo">SKYFULL AIRLINES</div>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="#search-section">Search</a>
+            <a href="login.html" id="auth-link">Login / Register</a>
+        </div>
+    </nav>
+
+    <header class="hero">
+        <h1>Reach For The Sky</h1>
+        <p>Experience premium travel with SKYFULL Airlines. Sky is full with SKYFULL.</p>
+        <a href="#search-section" class="btn btn-primary">Book a Flight</a>
+    </header>
+
+    <section id="search-section" style="padding: 2rem 5%; padding-bottom:0;">
+        <div class="glass-card">
+            <!-- Tab Navigation -->
+            <div class="tab-nav">
+                <button class="tab-btn active" onclick="openTab('tab-flight', this)">✈️ Book Flight</button>
+                <button class="tab-btn" onclick="openTab('tab-checkin', this)">📋 Check-in</button>
+                <button class="tab-btn" onclick="openTab('tab-manage', this)">🎫 Manage Booking</button>
+                <button class="tab-btn" onclick="openTab('tab-status', this)">🛫 Flight Status</button>
+            </div>
+
+            <!-- Tab 1: Flight Search (Existing) -->
+            <div id="tab-flight" class="tab-content active">
+                <!-- Trip Type -->
+                <div style="margin-bottom:1rem; display:flex; gap:1.5rem;">
+                    <label style="display:flex; align-items:center; cursor:pointer;">
+                        <input type="radio" name="tripType" value="oneWay" checked style="width:auto; margin-right:5px;"
+                            onchange="toggleReturnDate()"> One Way
+                    </label>
+                    <label style="display:flex; align-items:center; cursor:pointer;">
+                        <input type="radio" name="tripType" value="roundTrip" style="width:auto; margin-right:5px;"
+                            onchange="toggleReturnDate()"> Round Trip
+                    </label>
+                </div>
+
+                <!-- Inputs Grid -->
+                <div
+                    style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:1rem; align-items:end;">
+                    <div class="form-group" style="margin-bottom:0;">
+                        <label>From</label>
+                        <input type="text" id="search-from" placeholder="Origin" oninput="filterFlights()">
+                    </div>
+                    <div class="form-group" style="margin-bottom:0;">
+                        <label>To</label>
+                        <input type="text" id="search-to" placeholder="Destination" oninput="filterFlights()">
+                    </div>
+                    <div class="form-group" style="margin-bottom:0;">
+                        <label>Departure</label>
+                        <input type="date" id="search-date" onchange="filterFlights()">
+                    </div>
+                    <div class="form-group" style="margin-bottom:0;">
+                        <label>Return</label>
+                        <input type="date" id="search-ret" disabled style="opacity:0.5; cursor:not-allowed;">
+                    </div>
+                    <div class="form-group" style="margin-bottom:0;">
+                        <label>Passengers</label>
+                        <input type="number" id="search-passengers" value="1" min="1" max="9" style="width:100%"
+                            onchange="renderPaxTypeInputs(); filterFlights()">
+                    </div>
+                </div>
+
+                <!-- Dynamic Mixed Passenger Types -->
+                <div id="pax-types-container" style="display:flex; gap:10px; margin-top:10px; flex-wrap:wrap;">
+                    <!-- JS will populate this based on count -->
+                    <div style="flex:1; min-width:120px;">
+                        <label style="font-size:0.8rem">Passenger 1</label>
+                        <select class="pax-type-select" style="width:100%">
+                            <option value="ADULT">Adult</option>
+                            <option value="STUDENT">Student</option>
+                            <option value="CHILD">Child</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div style="margin-top:1.5rem; text-align:right;">
+                    <button class="btn btn-primary" onclick="filterFlights()" style="padding:0.8rem 3rem;">Search
+                        Flights</button>
+                </div>
+            </div>
+
+            <!-- Tab 2: Check-in -->
+            <div id="tab-checkin" class="tab-content">
+                <h3 style="margin-bottom:1rem; color:var(--accent);">Online Check-in</h3>
+                <p style="margin-bottom:1.5rem; color:#ccc;">Select your seat and get your boarding pass digitally.</p>
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:1rem;">
+                    <div class="form-group">
+                        <label>Ticket Number or PNR</label>
+                        <input type="text" id="checkin-pnr" placeholder="e.g. 1025">
+                    </div>
+                    <div class="form-group">
+                        <label>Use Surname</label>
+                        <input type="text" id="checkin-surname" placeholder="Surname">
+                    </div>
+                </div>
+                <div style="text-align:right;">
+                    <button class="btn btn-primary" onclick="performPublicCheckIn()">✅ Continue to Check-in ➜</button>
+                </div>
+            </div>
+
+            <!-- Tab 3: Manage Booking -->
+            <div id="tab-manage" class="tab-content">
+                <h3 style="margin-bottom:1rem; color:var(--accent);">Manage Booking</h3>
+                <p style="margin-bottom:1.5rem; color:#ccc;">Change flights, add extras, or view details.</p>
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:1rem;">
+                    <div class="form-group">
+                        <label>Ticket Number (Booking ID)</label>
+                        <input type="text" id="manage-pnr" placeholder="e.g. 1025">
+                    </div>
+                    <div class="form-group">
+                        <label>Surname</label>
+                        <input type="text" id="manage-surname" placeholder="Surname">
+                    </div>
+                </div>
+                <div style="text-align:right;">
+                    <button class="btn btn-primary" onclick="performManageBooking()">Find Booking ➜</button>
+                </div>
+                <div id="managed-booking-results" style="margin-top: 2rem;">
+                    <!-- Results will be displayed here by JS -->
+                </div>
+            </div>
+
+            <!-- Tab 4: Flight Status -->
+            <div id="tab-status" class="tab-content">
+                <h3 style="margin-bottom:1rem; color:var(--accent);">Flight Status</h3>
+                <p style="margin-bottom:1.5rem; color:#ccc;">Track real-time flight information.</p>
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:1rem;">
+                    <div class="form-group">
+                        <label>Flight Number</label>
+                        <input type="text" id="status-flight" placeholder="e.g. SK105">
+                    </div>
+                    <div class="form-group">
+                        <label>Date</label>
+                        <input type="date" id="status-date">
+                    </div>
+                </div>
+                <div style="text-align:right;">
+                    <button class="btn btn-primary" onclick="performCheckStatus()">Check Status ➜</button>
+                </div>
+                <div id="status-results"></div>
+            </div>
+        </div>
+    </section>
+
+    <section id="flights-section" style="padding: 2rem 5%; display:none;">
+        <h2 style="margin-bottom: 2rem; border-bottom: 2px solid var(--accent); display:inline-block;">Scheduled Flights
+        </h2>
+
+        <div id="flights-container" class="card-grid">
+            <!-- Flights loaded via JS -->
+            <div style="text-align:center; padding:2rem;">Loading flights...</div>
+        </div>
+    </section>
+
+    <!-- Booking Modal -->
+    <div id="booking-modal" class="modal" style="display:none;">
+        <div class="glass-card modal-content">
+            <span class="close" onclick="closeBookingModal()">&times;</span>
+            <h2 id="modal-flight-code">Flight Booking</h2>
+            <p><span id="modal-flight-dest"></span></p>
+
+            <!-- Passenger Types -->
+            <div id="pax-type-selection-container" style="display:flex; gap:10px; margin-bottom:1rem; flex-wrap:wrap;">
+                <!-- JS will fill this -->
+            </div>
+
+            <div class="seat-map" id="seat-map-container">
+                <!-- Seats generated by JS -->
+            </div>
+
+            <div style="margin-top:2rem; text-align:right;">
+                <span id="selected-seat-display" style="margin-right:1rem; font-weight:bold;">No seat selected</span>
+                <button class="btn btn-primary" onclick="proceedToPayment()">Confirm Booking</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Passenger Details Modal -->
+    <div id="pax-details-modal" class="modal" style="display:none;">
+        <div class="glass-card modal-content" style="max-width:500px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+                <h3 style="color:var(--accent)">Passenger Information</h3>
+                <span style="cursor:pointer; font-size:1.5rem;" onclick="closePaxModal()">&times;</span>
+            </div>
+            <div id="pax-details-form-container" style="max-height:60vh; overflow-y:auto; padding-right:10px;">
+                <!-- Generated by JS -->
+            </div>
+            <button class="btn btn-primary" onclick="submitPaxDetails()" style="width:100%; margin-top:1rem;">Continue
+                to Payment</button>
+        </div>
+    </div>
+
+    <!-- Payment Modal -->
+    <div id="payment-modal" class="modal" style="display:none;">
+        <div class="glass-card modal-content" style="max-width:450px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+                <h3 style="color:var(--accent)">Secure Payment</h3>
+                <span style="cursor:pointer; font-size:1.5rem;" onclick="closePaymentModal()">&times;</span>
+            </div>
+
+            <div style="background:rgba(255,255,255,0.05); padding:1rem; border-radius:8px; margin-bottom:1.5rem;">
+                <div style="display:flex; justify-content:space-between; margin-bottom:0.5rem;">
+                    <span>Flight:</span> <strong id="pay-flight">SK100</strong>
+                </div>
+                <div style="display:flex; justify-content:space-between; margin-bottom:0.5rem;">
+                    <span>Passengers:</span> <strong id="pay-pax-count">2</strong>
+                </div>
+                <div
+                    style="display:flex; justify-content:space-between; font-size:1.2rem; border-top:1px solid rgba(255,255,255,0.1); padding-top:0.5rem; margin-top:0.5rem;">
+                    <span>Total:</span> <strong id="pay-total" style="color:var(--success)">$150.00</strong>
+                </div>
+            </div>
+
+            <form onsubmit="event.preventDefault(); processPayment();">
+                <div class="form-group">
+                    <label>Cardholder Name</label>
+                    <input type="text" placeholder="John Doe" required>
+                </div>
+                <div class="form-group">
+                    <label>Card Number</label>
+                    <input type="text" placeholder="0000 0000 0000 0000" maxlength="19" required>
+                </div>
+                <div style="display:flex; gap:1rem;">
+                    <div class="form-group" style="flex:1;">
+                        <label>Expiry</label>
+                        <input type="text" placeholder="MM/YY" maxlength="5" required>
+                    </div>
+                    <div class="form-group" style="flex:1;">
+                        <label>CVV</label>
+                        <input type="text" placeholder="123" maxlength="3" required>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width:100%; margin-top:1rem;">Pay & Confirm
+                    Booking</button>
+            </form>
+        </div>
+    </div>
+
+    <footer style="text-align:center; padding: 2rem; background: rgba(0,0,0,0.5); margin-top:2rem;">
+        <p>&copy; 2025 SKYFULL Airlines. All rights reserved.</p>
+    </footer>
+
+    <script src="js/app.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            loadPublicFlights();
+
+            const user = JSON.parse(localStorage.getItem('user'));
+            if (user) {
+                const link = document.getElementById('auth-link');
+                link.textContent = `Hi, ${user.username}`;
+                link.href = user.role === 'ADMIN' ? 'admin.html' : (user.role === 'OWNER' ? 'owner.html' : 'user.html');
+            }
+        });
+    </script>
+</body>
+
+</html>

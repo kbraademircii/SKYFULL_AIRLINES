@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>My Dashboard - SKYFULL</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700&family=Inter:wght@400;600&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="logo">SKYFULL AIRLINES <span
+                style="font-size:0.8rem; background:none; -webkit-text-fill-color:white;">USER</span></div>
+        <div class="nav-links">
+            <a href="index.html#search-section">Book Flight</a>
+            <a href="#" onclick="logout()">Logout</a>
+        </div>
+    </nav>
+
+    <div class="panel-container">
+        <div class="sidebar">
+            <ul>
+                <li><a href="#" id="link-bookings" class="active" onclick="switchTab('bookings')">My Bookings</a></li>
+                <li><a href="#" id="link-profile" onclick="switchTab('profile')">Profile</a></li>
+            </ul>
+        </div>
+        <div class="content">
+            <!-- Bookings Section -->
+            <div id="section-bookings">
+                <h2 style="margin-bottom:1rem;">Your Journey Starts Here</h2>
+                <div id="my-bookings">
+                    <p>Loading bookings...</p>
+                </div>
+            </div>
+
+            <!-- Profile Section -->
+            <div id="section-profile" style="display:none;">
+                <h2 style="margin-bottom:1rem;">My Profile</h2>
+                <div class="glass-card" style="max-width:500px;">
+                    <div style="display:flex; align-items:center; gap:1rem; margin-bottom:2rem;">
+                        <div
+                            style="width:60px; height:60px; background:var(--accent-gradient); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:1.5rem; font-weight:bold;">
+                            <span id="profile-initial">U</span>
+                        </div>
+                        <div>
+                            <h3 id="profile-name">User Name</h3>
+                            <p style="opacity:0.7;">Verified Passenger</p>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Username</label>
+                        <input type="text" id="profile-username" readonly style="opacity:0.7; cursor:default;">
+                    </div>
+                    <div class="form-group">
+                        <label>Role</label>
+                        <input type="text" id="profile-role" readonly style="opacity:0.7; cursor:default;">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="cancel-modal" class="modal" style="display:none;">
+        <div class="glass-card modal-content" style="max-width:400px; text-align:center;">
+            <h3 style="color:var(--danger); margin-bottom:1rem;">Cancel Booking?</h3>
+            <p>Are you sure you want to cancel this booking? This action cannot be undone.</p>
+            <div style="margin-top:2rem; display:flex; justify-content:center; gap:1rem;">
+                <button class="btn btn-outline" onclick="closeCancelModal()">No, Keep it</button>
+                <button class="btn btn-primary" style="background:var(--danger);" onclick="confirmCancel()">Yes,
+                    Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/app.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const user = requireAuth(); // Any logged in user
+            if (user) {
+                // Populate Profile
+                document.getElementById('profile-name').innerText = user.fullName;
+                document.getElementById('profile-username').value = user.username;
+                document.getElementById('profile-role').value = user.role;
+                document.getElementById('profile-initial').innerText = user.fullName.charAt(0).toUpperCase();
+
+                // Update Header Logo Name
+                const logoSpan = document.querySelector('.logo span');
+                if (logoSpan) logoSpan.innerText = user.fullName;
+            }
+            loadUserBookings();
+        });
+
+        function switchTab(tab) {
+            // Update Sidebar
+            document.querySelectorAll('.sidebar a').forEach(a => a.classList.remove('active'));
+            document.getElementById('link-' + tab).classList.add('active');
+
+            // Toggle Sections
+            if (tab === 'bookings') {
+                document.getElementById('section-bookings').style.display = 'block';
+                document.getElementById('section-profile').style.display = 'none';
+            } else {
+                document.getElementById('section-bookings').style.display = 'none';
+                document.getElementById('section-profile').style.display = 'block';
+            }
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Login - SKYFULL Airlines</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700&family=Inter:wght@400;600&display=swap"
+        rel="stylesheet">
+</head>
+
+<body style="display:flex; justify-content:center; align-items:center;">
+
+    <div class="glass-card" style="width: 100%; max-width: 400px;">
+        <h2 style="text-align:center; margin-bottom:1.5rem;">Welcome Back</h2>
+
+        <div id="login-form-div">
+            <div class="form-group">
+                <label>Username</label>
+                <input type="text" id="l-username" placeholder="Enter username">
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" id="l-password" placeholder="Enter password">
+            </div>
+            <button class="btn btn-primary" style="width:100%" onclick="handleLogin()">Login</button>
+            <p style="margin-top:1rem; text-align:center;">
+                New here? <a href="#" style="color:var(--accent)" onclick="toggleAuth()">Create Account</a>
+            </p>
+        </div>
+
+        <div id="register-form-div" style="display:none;">
+            <div class="form-group">
+                <label>Full Name</label>
+                <input type="text" id="r-fullname">
+            </div>
+            <div class="form-group">
+                <label>Username</label>
+                <input type="text" id="r-username">
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" id="r-password">
+            </div>
+            <button class="btn btn-primary" style="width:100%" onclick="handleRegister()">Register</button>
+            <p style="margin-top:1rem; text-align:center;">
+                Already have an account? <a href="#" style="color:var(--accent)" onclick="toggleAuth()">Login</a>
+            </p>
+        </div>
+
+    </div>
+
+    <script src="js/app.js"></script>
+    <script>
+        function toggleAuth() {
+            const loginDiv = document.getElementById('login-form-div');
+            const regDiv = document.getElementById('register-form-div');
+            if (loginDiv.style.display === 'none') {
+                loginDiv.style.display = 'block';
+                regDiv.style.display = 'none';
+            } else {
+                loginDiv.style.display = 'none';
+                regDiv.style.display = 'block';
+            }
+        }
+
+        async function handleLogin() {
+            const u = document.getElementById('l-username').value;
+            const p = document.getElementById('l-password').value;
+            if (!u || !p) return showToast('Please fill all fields', 'error');
+            await login(u, p);
+        }
+
+        async function handleRegister() {
+            const f = document.getElementById('r-fullname').value;
+            const u = document.getElementById('r-username').value;
+            const p = document.getElementById('r-password').value;
+            if (!u || !p) return showToast('Please fill all fields', 'error');
+
+            await register({
+                username: u,
+                password: p,
+                fullName: f
+            });
+        }
+    </script>
+</body>
+
+</html>
