@@ -1,7 +1,6 @@
 SKYFULL AIRLINES - FLIGHT RESERVATION SYSTEM
 ===============================================
-Student Name: HATİCE KÜBRA DEMİRCİ
-Student ID:   220709087
+
 Course:       Database Management Systems
 
 DESCRIPTION
